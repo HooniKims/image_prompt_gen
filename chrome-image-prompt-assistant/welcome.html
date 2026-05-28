@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Auto-K 이미지 프롬프트 도우미 설치 안내</title>
+    <link rel="stylesheet" href="src/welcome.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p>Chrome Extension</p>
+        <h1>Auto-K 이미지 프롬프트 도우미</h1>
+        <span>ChatGPT와 Gemini 입력창에 이미지 생성 프롬프트를 안전하게 넣어주는 도구</span>
+      </section>
+
+      <section>
+        <h2>설치 방법</h2>
+        <ol>
+          <li>ZIP 파일을 압축 해제합니다.</li>
+          <li>Chrome 주소창에 <code>chrome://extensions</code>를 입력합니다.</li>
+          <li>오른쪽 위 <b>개발자 모드</b>를 켭니다.</li>
+          <li><b>압축해제된 확장 프로그램 로드</b>를 누르고 이 폴더를 선택합니다.</li>
+          <li>ChatGPT 또는 Gemini 페이지를 열면 오른쪽 패널이 나타납니다.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>기본 동작</h2>
+        <ul>
+          <li>기본값은 자동 전송이 아니라 입력창 삽입입니다.</li>
+          <li>기존 입력창 내용이 있으면 덮어쓰기, 이어붙이기, 취소를 선택합니다.</li>
+          <li>API 연결이 실패하면 실패 메시지를 표시하고 결과를 저장하지 않습니다.</li>
+          <li>작업 기록은 Chrome 로컬 저장소에만 저장됩니다.</li>
+        </ul>
+      </section>
+
+      <section class="admin">
+        <h2>숨겨진 관리자 설정</h2>
+        <p>일반 사용자는 수정하지 않아도 됩니다. 기본 hosted Prompt API에 자동 연결됩니다.</p>
+        <label>
+          API 주소
+          <input id="apiUrl" placeholder="https://image-prompt.alluser.site/api/image-prompt" />
+        </label>
+        <label>
+          모델명
+          <input id="modelName" placeholder="선택 사항" />
+        </label>
+        <label>
+          API 키 또는 보호 설정
+          <input id="apiKey" placeholder="초기 공개 모드에서는 비워둠" />
+        </label>
+        <button id="save">저장</button>
+        <span id="status"></span>
+      </section>
+    </main>
+    <script src="src/options.js"></script>
+  </body>
+</html>
