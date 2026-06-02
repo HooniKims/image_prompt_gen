@@ -76,6 +76,15 @@ textarea {
   font-size: 15px;
 }
 
+.brand-signature {
+  margin-left: 6px;
+  color: #155eef;
+  font-family: "Segoe Script", "Bradley Hand ITC", "Brush Script MT", cursive;
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .topbar small {
   color: #64748b;
   font-size: 12px;

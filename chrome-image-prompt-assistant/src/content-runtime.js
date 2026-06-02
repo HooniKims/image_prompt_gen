@@ -1128,7 +1128,7 @@
       <button class="floating" data-floating data-action="toggle"><span>프롬프트</span><span>만들기</span></button>
       <aside class="panel" data-panel>
         <header class="topbar">
-          <div><strong>이미지 프롬프트</strong><small data-site></small></div>
+          <div><strong>이미지 프롬프트 <span class="brand-signature">by HooniKim</span></strong><small data-site></small></div>
           <div class="top-actions"><button data-action="settings">설정</button><button data-action="toggle">접기</button></div>
         </header>
         <div class="body" data-body>
