@@ -16,8 +16,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 async function fetchJson(message) {
   const url = new URL(message.url);
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-    throw new Error('Unsupported API URL protocol');
+  if (url.protocol !== 'https:') {
+    throw new Error('Only HTTPS API URLs are supported');
   }
 
   const response = await fetch(message.url, {

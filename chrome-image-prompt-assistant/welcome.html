@@ -28,16 +28,21 @@
       <section>
         <h2>기본 동작</h2>
         <ul>
+          <li>프롬프트 만들기는 별도 서버 설정 없이 브라우저 안에서 바로 동작합니다.</li>
           <li>기본값은 자동 전송이 아니라 입력창 삽입입니다.</li>
           <li>기존 입력창 내용이 있으면 덮어쓰기, 이어붙이기, 취소를 선택합니다.</li>
-          <li>API 연결이 실패하면 실패 메시지를 표시하고 결과를 저장하지 않습니다.</li>
           <li>작업 기록은 Chrome 로컬 저장소에만 저장됩니다.</li>
+          <li>사용자가 고급 설정에서 직접 켠 경우에만 사용자 지정 Prompt API를 호출합니다.</li>
         </ul>
       </section>
 
       <section class="admin">
-        <h2>숨겨진 관리자 설정</h2>
-        <p>일반 사용자는 수정하지 않아도 됩니다. 기본 hosted Prompt API에 자동 연결됩니다.</p>
+        <h2>고급 설정</h2>
+        <p>일반 사용자는 수정하지 않아도 됩니다. 직접 관리하는 Prompt API가 있을 때만 사용합니다.</p>
+        <label>
+          <input id="useExternalApi" type="checkbox" />
+          사용자 지정 Prompt API 사용
+        </label>
         <label>
           API 주소
           <input id="apiUrl" placeholder="https://image-prompt.alluser.site/api/image-prompt" />
@@ -48,7 +53,7 @@
         </label>
         <label>
           API 키 또는 보호 설정
-          <input id="apiKey" placeholder="초기 공개 모드에서는 비워둠" />
+          <input id="apiKey" placeholder="선택 사항" />
         </label>
         <button id="save">저장</button>
         <span id="status"></span>

@@ -1,7 +1,7 @@
 (() => {
   const ROOT_ID = 'cipa-root';
   const DEFAULT_API_URL = 'https://image-prompt.alluser.site/api/image-prompt';
-  const DEFAULT_API_KEY = 'gudgns0411skaluv2018tjdbs130429';
+  const DEFAULT_API_KEY = '';
   const DEFAULT_LM_STUDIO_MODEL = 'google/gemma-4-e2b';
   const FALLBACK_LM_STUDIO_MODEL = 'google/gemma-4-e4b';
   const DEFAULT_REQUEST_TIMEOUT_MS = 90000;
@@ -160,6 +160,7 @@
         apiKey: DEFAULT_API_KEY,
         model: DEFAULT_LM_STUDIO_MODEL,
         fallbackModel: FALLBACK_LM_STUDIO_MODEL,
+        useExternalApi: false,
         onboardingDone: false,
         collapsed: false,
       }));
@@ -249,6 +250,7 @@
         this.state.settings.apiUrl = this.val('apiUrl') || DEFAULT_API_URL;
         this.state.settings.apiKey = this.val('apiKey');
         this.state.settings.model = this.val('model');
+        this.state.settings.useExternalApi = this.checked('useExternalApi');
         await write('settings', this.state.settings);
         this.state.showSettings = false;
         return this.toast('설정을 저장했습니다.');
@@ -313,7 +315,7 @@
         this.state.result = result;
         this.state.card = card;
         this.state.cards = await read('workCards', []);
-        this.toast('API로 프롬프트를 만들었습니다.');
+        this.toast(this.state.settings.useExternalApi ? 'API로 프롬프트를 만들었습니다.' : '프롬프트를 만들었습니다.');
       } catch (error) {
         console.warn('[CIPA] prompt generation failed', error);
         this.toast(`API 연결 실패: ${humanError(error)}`);
@@ -573,6 +575,7 @@
       setDefault(this.root, 'apiUrl', this.state.settings.apiUrl || DEFAULT_API_URL);
       setDefault(this.root, 'apiKey', this.state.settings.apiKey || DEFAULT_API_KEY);
       setDefault(this.root, 'model', this.state.settings.model || DEFAULT_LM_STUDIO_MODEL);
+      setChecked(this.root, 'useExternalApi', Boolean(this.state.settings.useExternalApi));
     }
 
     syncTargetSiteField() {
@@ -586,11 +589,16 @@
       this.state.settings.apiKey = this.val('apiKey') || this.state.settings.apiKey || DEFAULT_API_KEY;
       this.state.settings.model = this.val('model') || this.state.settings.model || DEFAULT_LM_STUDIO_MODEL;
       this.state.settings.fallbackModel = FALLBACK_LM_STUDIO_MODEL;
+      this.state.settings.useExternalApi = this.checked('useExternalApi');
       write('settings', this.state.settings);
     }
 
     val(field) {
       return q(this.root, `[data-field="${field}"]`)?.value?.trim() || '';
+    }
+
+    checked(field) {
+      return Boolean(q(this.root, `[data-field="${field}"]`)?.checked);
     }
 
     setField(field, value) {
@@ -616,6 +624,8 @@
   }
 
   async function requestPrompt(input, settings) {
+    if (!settings.useExternalApi) return fallbackResponse(input);
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), Number(settings.timeoutMs || DEFAULT_REQUEST_TIMEOUT_MS));
     const apiUrl = settings.apiUrl || DEFAULT_API_URL;
@@ -725,6 +735,7 @@
       apiKey: settings.apiKey || DEFAULT_API_KEY,
       model: settings.model || DEFAULT_LM_STUDIO_MODEL,
       fallbackModel: settings.fallbackModel || FALLBACK_LM_STUDIO_MODEL,
+      useExternalApi: Boolean(settings.useExternalApi),
     };
     if (isDirectLmStudioApiUrl(next.apiUrl)) next.apiUrl = DEFAULT_API_URL;
     return next;
@@ -851,7 +862,7 @@
       feedback: input.feedback,
       parentVersionId: input.parentVersionId,
       client: {
-        appVersion: '0.1.0',
+        appVersion: '0.1.1',
         locale: 'ko-KR',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Seoul',
       },
@@ -937,9 +948,9 @@
         targetSite: input.targetSite,
         purposeGuidanceKo: purposeGuidanceKo(input),
       },
-      suggestions: ['서버 연결 전 임시 프롬프트입니다. 정밀 생성은 Mac mini API 연결 후 더 좋아집니다.', '이미지 안 문구는 짧게 유지하면 글자 오류가 줄어듭니다.'],
+      suggestions: ['이미지 안 문구는 짧고 명확하게 유지하면 글자 오류가 줄어듭니다.', '원하는 색감, 구도, 대상 연령을 추가 조건에 적으면 결과가 더 안정적입니다.'],
       version: { id: id('v'), parentId: input.parentVersionId ?? null, createdAt: new Date().toISOString() },
-      metadata: { guideSet: ['browser-fallback'], containsProtectedKoreanText: koreanText(`${input.sourceText} ${input.inImageText}`).length > 0, source: 'fallback' },
+      metadata: { guideSet: ['browser-template'], containsProtectedKoreanText: koreanText(`${input.sourceText} ${input.inImageText}`).length > 0, source: 'browser_template' },
     };
   }
 
@@ -1153,7 +1164,7 @@
             <section class="result" data-result hidden><div class="prompt" data-prompt></div><div class="summary" data-summary></div><ul data-suggestions></ul><div class="row"><button class="primary" data-action="insert">자동 입력</button><button class="copy-button" data-action="copy">복사</button></div><div class="quick-actions"><button data-action="select-feedback" data-feedback="더 선명하게">더 선명하게</button><button data-action="select-feedback" data-feedback="더 한국적으로">더 한국적으로</button><button data-action="select-feedback" data-feedback="텍스트 오류 줄이기">텍스트 오류 줄이기</button><button data-action="select-feedback" data-feedback="더 사실적으로">더 사실적으로</button><button data-action="select-feedback" data-feedback="더 단순하게">더 단순하게</button><button data-action="select-feedback" data-feedback="텍스트 줄이기">텍스트 줄이기</button><button data-action="select-feedback" data-feedback="색감 바꾸기">색감 바꾸기</button><button data-action="select-feedback" data-feedback="교육용으로 더 안전하게">교육용 안전</button></div><div class="feedback-form" data-feedback-form><textarea data-field="feedback" rows="2" placeholder="수정 방향을 선택하거나 직접 입력한 뒤 다시 생성하기를 누르세요"></textarea><button data-action="improve-custom">다시 생성하기</button></div></section>
             <section><label>최근 작업</label><ul class="history" data-history></ul></section>
           </main>
-          <section class="settings-panel" data-settings-panel hidden><label>API 주소<input data-field="apiUrl" autocomplete="off" spellcheck="false"></label><label>API 키<input data-field="apiKey" type="text" autocomplete="off" spellcheck="false" data-lpignore="true"></label><label>모델명<input data-field="model" autocomplete="off" spellcheck="false"></label><button data-action="save-settings">저장</button></section>
+          <section class="settings-panel" data-settings-panel hidden><p>기본 기능은 외부 설정 없이 브라우저 안에서 바로 동작합니다. 고급 사용자는 직접 관리하는 Prompt API를 연결할 수 있습니다.</p><label><input data-field="useExternalApi" type="checkbox"> 사용자 지정 Prompt API 사용</label><label>API 주소<input data-field="apiUrl" autocomplete="off" spellcheck="false"></label><label>API 키<input data-field="apiKey" type="text" autocomplete="off" spellcheck="false" data-lpignore="true"></label><label>모델명<input data-field="model" autocomplete="off" spellcheck="false"></label><button data-action="save-settings">저장</button></section>
           <div class="toast" data-toast></div>
         </div>
         <div class="dialog" data-insert-dialog hidden><div><b>입력창에 내용이 있습니다.</b><button data-insert-mode="overwrite">덮어쓰기</button><button data-insert-mode="append">이어붙이기</button><button data-insert-mode="cancel">취소</button></div></div>
@@ -1168,6 +1179,11 @@
   function setDefault(root, field, value) {
     const element = q(root, `[data-field="${field}"]`);
     if (element && !element.value) element.value = value;
+  }
+
+  function setChecked(root, field, value) {
+    const element = q(root, `[data-field="${field}"]`);
+    if (element) element.checked = Boolean(value);
   }
 
   function id(prefix) {

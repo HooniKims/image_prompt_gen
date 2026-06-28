@@ -1,9 +1,15 @@
 {
   "name": "chrome-image-prompt-assistant",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:e2e": "playwright test",
+    "install:playwright": "playwright install chromium",
     "build:zip": "node scripts/build-zip.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
   }
 }
