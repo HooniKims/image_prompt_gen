@@ -46,7 +46,9 @@ function chatgptFixture() {
     </html>`;
 }
 
-test('generates a prompt and inserts it into a ChatGPT-like input', async () => {
+for (const site of ['chatgpt', 'gemini']) {
+test(`generates, revises, and inserts a prompt for ${site}`, async () => {
+  const targetUrl = site === 'gemini' ? 'https://gemini.google.com/cipa-playwright-input' : testUrl;
   const userDataDir = await mkdtemp(path.join(os.tmpdir(), 'cipa-playwright-'));
   let context;
 
@@ -69,16 +71,16 @@ test('generates a prompt and inserts it into a ChatGPT-like input', async () => 
       externalApiRequested = true;
       await route.abort();
     });
-    await context.route(testUrl, async (route) => {
+    await context.route(targetUrl, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'text/html; charset=utf-8',
-        body: chatgptFixture(),
+        body: site === 'gemini' ? chatgptFixture().replace('<textarea id="prompt-textarea" aria-label="ChatGPT prompt input"></textarea>', '<div contenteditable="true" role="textbox" aria-label="Gemini prompt input"></div>') : chatgptFixture(),
       });
     });
 
     const page = await context.newPage();
-    await page.goto(testUrl);
+    await page.goto(targetUrl);
 
     await expect(page.locator('#cipa-root')).toBeAttached();
 
@@ -95,15 +97,25 @@ test('generates a prompt and inserts it into a ChatGPT-like input', async () => 
     await page.locator('[data-action="generate"]').click();
 
     const generatedPrompt = page.locator('[data-prompt]');
-    await expect(generatedPrompt).toContainText('Create an image prompt');
+    await expect(generatedPrompt).toContainText(`Create an image prompt for ${site === 'gemini' ? 'Gemini' : 'ChatGPT'}.`);
+    await expect(generatedPrompt).toContainText('do not generate an image');
+    await expect(generatedPrompt).not.toContainText('Create the image described below');
     await expect(generatedPrompt).toContainText('초등학생용 물의 순환 설명 그림');
     expect(externalApiRequested).toBe(false);
 
+    await expect(generatedPrompt).toContainText(site === 'gemini' ? 'coherent scene' : 'visual specification');
+    await page.locator('[data-field="feedback"]').fill('배경을 연두색으로 바꿔줘');
+    await page.locator('[data-action="improve-custom"]').click();
+    await expect(generatedPrompt).toContainText('Requested revision: 배경을 연두색으로 바꿔줘');
     await page.locator('[data-action="insert"]').click();
-    await expect(page.locator('#prompt-textarea')).toHaveValue(/Create an image prompt/);
-    await expect(page.locator('#prompt-textarea')).toHaveValue(/초등학생용 물의 순환 설명 그림/);
+    const input = page.locator(site === 'gemini' ? '[contenteditable="true"]' : '#prompt-textarea');
+    if (site === 'gemini') await expect(input).toContainText('Requested revision: 배경을 연두색으로 바꿔줘');
+    else await expect(input).toHaveValue(/Requested revision: 배경을 연두색으로 바꿔줘/);
+    await page.screenshot({ path: test.info().outputPath(site + '.png'), fullPage: true });
   } finally {
     if (context) await context.close();
     await rm(userDataDir, { recursive: true, force: true });
   }
 });
+
+}

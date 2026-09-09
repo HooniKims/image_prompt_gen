@@ -10,14 +10,14 @@ async function readText(path) {
   return readFile(new URL(path, import.meta.url), 'utf8');
 }
 
-test('review build keeps versions synchronized at 0.1.1', async () => {
+test('review build keeps versions synchronized at 0.1.2', async () => {
   const manifest = await readJson('../manifest.json');
   const pkg = await readJson('../package.json');
   const runtime = await readText('../src/content-runtime.js');
 
-  assert.equal(manifest.version, '0.1.1');
-  assert.equal(pkg.version, '0.1.1');
-  assert.match(runtime, /appVersion:\s*'0\.1\.1'/);
+  assert.equal(manifest.version, '0.1.2');
+  assert.equal(pkg.version, '0.1.2');
+  assert.ok(runtime.includes("appVersion: '0.1.2'"));
 });
 
 test('review build does not require the optional Prompt API host permission', async () => {

@@ -17,6 +17,7 @@ const extensionFiles = [
   'install.html',
   'welcome.html',
   'README.md',
+  'docs/image-model-guide.md',
 ];
 
 const zipNames = [

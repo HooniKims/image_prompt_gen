@@ -109,7 +109,7 @@ This extension does not load or execute remote JavaScript. All extension logic i
 
 ## 심사 전 확인 사항
 
-- `manifest.json`, `package.json`, `src/content-runtime.js`의 버전은 모두 `0.1.1`입니다.
+- `manifest.json`, `package.json`, `src/content-runtime.js`의 버전은 모두 `0.1.2`입니다.
 - 필수 `host_permissions`에는 ChatGPT/Gemini 도메인만 있습니다.
 - `https://image-prompt.alluser.site/*`는 `optional_host_permissions`에만 있습니다.
 - 기본 프롬프트 생성은 외부 API 없이 동작합니다.

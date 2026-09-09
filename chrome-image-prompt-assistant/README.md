@@ -28,7 +28,7 @@ ChatGPT와 Gemini 웹페이지 오른쪽에 주입되는 이미지 프롬프트 
 - Gemini contenteditable 입력창 자동 삽입 보강
 - Chrome local storage 기반 작업 카드, 버전, 즐겨찾기, 최근 작업 불러오기/삭제
 - 최근 작업 100개 제한
-- ChatGPT Image 2.0 / Gemini Nano Banana 프롬프트 가이드 반영
+- GPT Image 2.5 / Gemini Nano Banana 최신 공식 프롬프트 가이드 반영 (2026-09-09 확인)
 - 고급 설정: 사용자 지정 Prompt API 사용 여부, API 주소, API 키, 모델명
 - ZIP 배포 스크립트
 
@@ -36,8 +36,9 @@ ChatGPT와 Gemini 웹페이지 오른쪽에 주입되는 이미지 프롬프트 
 
 모델별 이미지 생성 가이드의 핵심 규칙은 현재 런타임 코드에 내장되어 있습니다.
 
-- OpenAI Academy: Creating images with ChatGPT
-- Google DeepMind: Gemini Image / Nano Banana prompt guide
+- [OpenAI Image prompting](https://developers.openai.com/api/docs/guides/image-prompting)
+- [Google Gemini 이미지 생성 가이드](https://ai.google.dev/gemini-api/docs/image-generation)
+- [모델별 변경 사항과 적용 범위](docs/image-model-guide.md)
 
 실제 런타임 반영 위치는 `src/content-runtime.js`입니다. 이미지 생성 가이드, 작업 유형별 규칙, OpenAI-compatible 요청 구성, 내부 템플릿 프롬프트가 현재 실행 경로 안에 함께 들어 있습니다. 기본 생성 버튼은 외부 API 없이 성공 처리되며, 사용자 지정 Prompt API는 사용자가 고급 설정에서 직접 켠 경우에만 호출합니다.
 

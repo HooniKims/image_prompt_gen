@@ -858,11 +858,12 @@
         reason: modelSelectionReason(input),
       },
       options: input,
+      imageGuidance: imageGuidance(input),
       previousPrompt: input.previousPrompt,
       feedback: input.feedback,
       parentVersionId: input.parentVersionId,
       client: {
-        appVersion: '0.1.1',
+        appVersion: '0.1.2',
         locale: 'ko-KR',
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Seoul',
       },
@@ -872,6 +873,7 @@
   function openAIBody(input, model) {
     const system = [
       'You are an expert image-generation prompt writer.',
+      'Your task is to write or revise image prompts as text. Do not generate images. Do not claim to select the image model or set API parameters in the target website.',
       'Return JSON only. Do not wrap it in markdown.',
       'JSON shape: {"prompt":"...","promptKo":"...","summary":{},"suggestions":[],"metadata":{}}.',
       'The prompt field must be written primarily in English.',
@@ -891,6 +893,7 @@
       `Style: ${input.style}`,
       `Ratio: ${input.ratio}`,
       `Quality: ${input.quality}`,
+      imageGuidance(input),
       input.audience ? `Audience: ${input.audience}` : '',
       input.inImageText ? `Text inside image, preserve exactly: ${input.inImageText}` : '',
       input.referenceMode === 'attached_by_user' ? 'Reference: user will attach a file/image directly in the target chat.' : '',
@@ -958,13 +961,14 @@
     const protectedText = [...new Set([input.inImageText, ...koreanText(input.sourceText)].filter(Boolean))];
     const lines = [
       `Create an image prompt for ${input.targetSite === 'gemini' ? 'Gemini' : 'ChatGPT'}.`,
+      'Return the written prompt only; do not generate an image. Write in clear English while preserving any supplied image text in its original language.',
       `Main idea: ${input.sourceText || 'A clear, useful image based on the user idea.'}`,
       `Purpose: ${purposeLabel(input.purpose)}.`,
       `Output format preset: ${formatPresetLabel(input.formatPreset)} (${formatPresetEnglish(input.formatPreset)}).`,
       `Visual style: ${input.style}.`,
       `Aspect ratio: ${input.ratio}.`,
       `Quality direction: ${input.quality}.`,
-      'Write in clear English with concrete visual details, composition, lighting, colors, and framing.',
+      imageGuidance(input),
     ];
     const workflow = workflowGuidance(input);
     const purposeRules = purposeGuidance(input);
@@ -982,6 +986,20 @@
     }
     if (input.referenceMode === 'attached_by_user') lines.push('Refer to the attached image/file if the user has uploaded one in the current chat.');
     if (input.advancedNotes) lines.push(`Additional user notes: ${input.advancedNotes}`);
+    if (input.action === 'improve' && input.previousPrompt) lines.push(`Previous prompt:\n${input.previousPrompt}`);
+    if (input.feedback) lines.push(`Requested revision: ${input.feedback}. Revise the written prompt to reflect this change while preserving all other requested details.`);
+    return lines.join('\n');
+  }
+
+  function imageGuidance(input) {
+    const lines = [
+      'Write an image prompt specifying the requested subject, setting, composition, lighting, palette, and framing. Follow explicit user constraints before filling in unspecified details.',
+      input.targetSite === 'gemini'
+        ? 'Describe a coherent scene in natural sentences, with clear relationships between subjects and their environment. For a sequence, repeat character and key prop descriptions in each prompt.'
+        : 'Structure the prompt as a visual specification: describe the requested layout, visual hierarchy, and typography. For editing prompts, separate what should change from what should remain unchanged.',
+    ];
+    if (input.inImageText) lines.push('Quote the supplied image text verbatim in the prompt and specify readable spacing, contrast, and the requested position. Instruct the image model not to add unrelated text.');
+    if (input.referenceMode === 'attached_by_user') lines.push('In the prompt, describe the user-stated role of each reference (subject, style, or background) and the identity, geometry, or layout to preserve. Do not invent the contents of reference files; the user attaches them in the target chat.');
     return lines.join('\n');
   }
 

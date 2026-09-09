@@ -7,9 +7,13 @@ ChatGPT와 Gemini 화면 오른쪽에 이미지 생성 프롬프트 작성 패�
 ## 바로 다운로드
 
 검증된 배포 ZIP 파일은 아래 링크에서 받을 수 있습니다.
-현재 배포 ZIP은 `0.1.1` 버전이며, 패널 상단에 `by HooniKim` 서명이 표시됩니다.
+현재 배포 ZIP은 `0.1.2` 버전이며, 패널 상단에 `by HooniKim` 서명이 표시됩니다.
 
 [chrome-image-prompt-assistant.zip 다운로드](https://github.com/HooniKims/image_prompt_gen/raw/main/release/chrome-image-prompt-assistant.zip)
+
+## 최신 가이드 반영
+
+2026-09-09 공식 문서 기준으로 GPT Image 2.5와 Gemini 이미지 프롬프트 규칙을 갱신했습니다. [모델 및 공식 문서 안내](chrome-image-prompt-assistant/docs/image-model-guide.md)를 참고하세요. 이 확장은 프롬프트를 작성하며, 웹사이트의 이미지 모델을 직접 선택하지 않습니다.
 
 ## 주요 기능
 
