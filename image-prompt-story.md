@@ -269,7 +269,7 @@ https://image-prompt.alluser.site/api/image-prompt
 
 처음에는 로컬 LM Studio 주소를 직접 넣어 테스트할 수 있었다. 하지만 이 도구는 나만 쓰는 것이 아니라 다른 사람도 써야 한다. 사용자가 `localhost`나 LM Studio 프록시 주소를 직접 입력해야 한다면 설치 경험이 복잡해진다.
 
-그래서 기본 배포판은 hosted Prompt API에 자동으로 연결되도록 정리했다. 예전 테스트 과정에서 저장된 `lm.alluser.site`, `localhost`, `127.0.0.1` 같은 직접 호출 주소가 남아 있어도 확장 초기화 시 기본 API 주소로 되돌린다.
+그래서 기본 배포판은 hosted Prompt API에 자동으로 연결되도록 정리했다. 예전 테스트 과정에서 저장된 `lm.alluser.kr`, `localhost`, `127.0.0.1` 같은 직접 호출 주소가 남아 있어도 확장 초기화 시 기본 API 주소로 되돌린다.
 
 또 하나의 문제는 호출 위치였다. ChatGPT나 Gemini 페이지 안에 주입된 content script가 외부 API를 직접 호출하면 CORS나 origin 제한에 막힐 수 있다. 그래서 API 호출은 background service worker로 옮겼다.
 
