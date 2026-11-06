@@ -744,7 +744,7 @@
   function isDirectLmStudioApiUrl(apiUrl) {
     try {
       const { hostname } = new URL(apiUrl, location.href);
-      return hostname === 'lm.alluser.site' || hostname === 'localhost' || hostname === '127.0.0.1';
+      return hostname === 'lm.alluser.site' || hostname === 'lm.alluser.kr' || hostname === 'localhost' || hostname === '127.0.0.1';
     } catch {
       return false;
     }
