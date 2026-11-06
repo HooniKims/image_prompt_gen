@@ -147,7 +147,7 @@ POST https://image-prompt.alluser.site/api/image-prompt
 - 작업 유형이 `storybook`, `comic_webtoon`, `image_series`
 - 장면/컷 구성, 일관성 조건, 이미지 안 문구가 입력됨
 
-기본 배포판은 사용자가 LM Studio 주소를 직접 입력하지 않아도 되도록 항상 hosted Prompt API를 기본 API 주소로 사용합니다. 이전 테스트 과정에서 저장된 `lm.alluser.site`, `localhost`, `127.0.0.1` 직접 호출 주소는 확장 초기화 시 기본 Prompt API 주소로 되돌립니다.
+기본 배포판은 사용자가 LM Studio 주소를 직접 입력하지 않아도 되도록 항상 hosted Prompt API를 기본 API 주소로 사용합니다. 이전 테스트 과정에서 저장된 `lm.alluser.site`, `lm.alluser.kr`, `localhost`, `127.0.0.1` 직접 호출 주소는 확장 초기화 시 기본 Prompt API 주소로 되돌립니다.
 
 ### API 호출 위치
 
